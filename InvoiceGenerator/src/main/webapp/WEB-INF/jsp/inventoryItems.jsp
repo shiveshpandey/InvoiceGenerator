@@ -136,34 +136,45 @@
 		var str = "";
 		var table = document.getElementById("addRowTable");
 		for (var r = 1; r < table.rows.length; r++) {
-			str = str + table.rows[r].cells[0].innerHTML + "##"
-					+ table.rows[r].cells[1].innerHTML + "##"
-					+ table.rows[r].cells[2].innerHTML + "##"
-					+ table.rows[r].cells[3].innerHTML + "##"
-					+ table.rows[r].cells[4].innerHTML + "##"
-					+ table.rows[r].cells[5].innerHTML + "##"
-					+ table.rows[r].cells[6].innerHTML + "##"
-					+ table.rows[r].cells[7].innerHTML + "@@@";
+			if (table.rows[r].cells[8].innerHTML != "deleted") {
+				str = str + table.rows[r].cells[0].innerHTML + "##"
+						+ table.rows[r].cells[1].innerHTML + "##"
+						+ table.rows[r].cells[2].innerHTML + "##"
+						+ table.rows[r].cells[3].innerHTML + "##"
+						+ table.rows[r].cells[4].innerHTML + "##"
+						+ table.rows[r].cells[5].innerHTML + "##"
+						+ table.rows[r].cells[6].innerHTML + "##"
+						+ table.rows[r].cells[7].innerHTML + "@@@";
+			}
 		}
-		document.getElementById("pdfTextContent").value = str;
+		if (str == "" || str == null) {
+			alert("Please add atleast one product");
+			return false;
+		} else {
+			document.getElementById("pdfTextContent").value = str;
+			return true;
+		}
 	}
 </script>
 <body>
-	<div class="container-fluid">
+	<div class="container-fluid" align="center">
+		<h2>
+			<u>Invoice/Bill Form</u>
+		</h2>
 		<form action="generateInvoice" method="post"
 			enctype="application/x-www-form-urlencoded">
 			<input type="hidden" name="pdfTextContent" id="pdfTextContent"
 				value="" />
 			<table id="borderManageTable" border="1">
 				<tr>
-					<td>Seller Details</td>
-					<td>Customer Details</td>
+					<td><h4>Seller Details</h4></td>
+					<td><h4>Customer Details</h4></td>
 				</tr>
 				<tr>
 					<td>
 						<table>
 							<tr>
-								<td>Company Name</td>
+								<td>Name</td>
 								<td><input type="text" style="width: 180px"
 									name="companyName" id="companyName" value="${companyName}"></td>
 							</tr>
@@ -194,7 +205,7 @@
 					<td>
 						<table>
 							<tr>
-								<td>Customer Name</td>
+								<td>Name</td>
 								<td><input type="text" style="width: 180px"
 									name="customerName" id="customerName" value=""></td>
 							</tr>
@@ -220,10 +231,12 @@
 					</td>
 				</tr>
 				<tr>
-					<td>OrderID <input type="text" style="width: 180px"
-						name="orderId" id="orderId" value="${orderId}"></td>
-					<td>Order Date <input type="text" style="width: 180px"
-						name="orderDate" id="orderDate" value="${orderDate}"></td>
+					<td>&nbsp;Order ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+						type="text" style="width: 180px" name="orderId" id="orderId"
+						value="${orderId}"></td>
+					<td>&nbsp;Order Date&nbsp;<input type="text"
+						style="width: 180px" name="orderDate" id="orderDate"
+						value="${orderDate}"></td>
 				</tr>
 				<tr>
 					<td colspan="2"><table>
@@ -240,28 +253,28 @@
 								<td rowspan="4">Description</td>
 								<td rowspan="4"><textarea rows="4" cols="20"
 										name="description" id="description"></textarea></td>
-								<td>Unit Price (in Rs.)</td>
+								<td>Unit Price (&#8377;)</td>
 								<td><input type="text" style="width: 180px"
 									name="unitPrice" id="unitPrice" value=""></td>
 							</tr>
 							<tr>
-								<td>Tax (in Rs.)</td>
+								<td>Tax (&#8377;)</td>
 								<td><input type="text" style="width: 180px" name="tax"
 									id="tax" value=""></td>
 							</tr>
 							<tr>
-								<td>Discount (in Rs.)</td>
+								<td>Discount (&#8377;)</td>
 								<td><input type="text" style="width: 180px" name="discount"
 									id="discount" value=""></td>
 							</tr>
 							<tr>
-								<td>Total (in Rs.)</td>
+								<td>Total (&#8377;)</td>
 								<td><input type="text" style="width: 180px" name="total"
 									id="total" value=""></td>
 							</tr>
 							<tr>
-								<td align="right" colspan="2"><input type="button" name="addRow"
-									id="addRow" value="Add" onClick="addRecord();" /></td>
+								<td align="right" colspan="2"><input type="button"
+									name="addRow" id="addRow" value="Add" onClick="addRecord();" /></td>
 								<td align="left" colspan="2"><input type="button"
 									name="reset" id="reset" value="Reset" /></td>
 							</tr>
@@ -296,11 +309,11 @@
 								<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-								<td><input type="button" name="generateInvoice"
+								<td><input type="submit" name="generateInvoice"
 									id="generateInvoice" value="Generate Invoice"
-									onClick="GeneratePdf();submit();" /></td>
+									onClick="return GeneratePdf();" /></td>
 								<td><input type="button" name="cancel" id="cancel"
-									value="Cancel" /></td>
+									value="     Reset Form     " /></td>
 							</tr>
 						</table>
 					</td>

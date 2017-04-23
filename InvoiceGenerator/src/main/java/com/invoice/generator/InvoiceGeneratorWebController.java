@@ -39,7 +39,7 @@ public class InvoiceGeneratorWebController {
 	HttpServletRequest request;
 	@Autowired
 	HttpServletResponse response;
-
+	@Autowired
 	InvoiceGeneratorService invoiceGeneratorService;
 
 	@RequestMapping(value = "/loadProduct", method = RequestMethod.GET)
@@ -56,16 +56,21 @@ public class InvoiceGeneratorWebController {
 		productList.add(invoiceModel);
 		productList.add(invoiceModel);
 		productList.add(invoiceModel);
-		// productList = invoiceGeneratorService.fetchProductListFromDB();
-		model.addAttribute("productList", productList.toArray());
-		model.addAttribute("companyName", "companyName");
-		model.addAttribute("companyAddress", "companyAddress");
-		model.addAttribute("companyMobile", "companyMobile");
-		model.addAttribute("companyVattin", "companyVattin");
-		model.addAttribute("companyCst", "companyCst");
-		model.addAttribute("orderId", "orderId");
-		model.addAttribute("orderDate", "orderDate");
-		return "inventoryItems";
+		try {
+			productList = invoiceGeneratorService.fetchProductListAndCompanyDetailsFromDB();
+
+			model.addAttribute("productList", productList.toArray());
+			model.addAttribute("companyName", "companyName");
+			model.addAttribute("companyAddress", "companyAddress");
+			model.addAttribute("companyMobile", "companyMobile");
+			model.addAttribute("companyVattin", "companyVattin");
+			model.addAttribute("companyCst", "companyCst");
+			model.addAttribute("orderId", "orderId");
+			model.addAttribute("orderDate", "orderDate");
+			return "inventoryItems";
+		} catch (Exception e) {
+			return "errorPageDBFetch";
+		}
 	}
 
 	@RequestMapping(value = "/generateInvoice", method = RequestMethod.POST)
@@ -93,11 +98,13 @@ public class InvoiceGeneratorWebController {
 		pdfDataCollection.setFooter(b);
 		pdfDataCollection.setOrderDate(orderDate);
 		pdfDataCollection.setOrderId(orderId);
-		// if
-		// (invoiceGeneratorService.saveInvoiceDetailsToDB(pdfDataCollection)) {
-		this.generateInvoicePdf(pdfDataCollection);
-		// }
-		return "inventoryItems";
+
+		if (invoiceGeneratorService.saveInvoiceDetailsToDB(pdfDataCollection)) {
+			this.generateInvoicePdf(pdfDataCollection);
+			return "inventoryItems";
+		} else {
+			return "errorPageDBSave";
+		}
 	}
 
 	private PdfDataCollectionModel stringToObjectFromUserTextInput(String userInput) {

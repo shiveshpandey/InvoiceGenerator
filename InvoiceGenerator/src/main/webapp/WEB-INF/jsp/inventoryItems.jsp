@@ -164,7 +164,8 @@
 		<form action="generateInvoice" method="post"
 			enctype="application/x-www-form-urlencoded">
 			<input type="hidden" name="pdfTextContent" id="pdfTextContent"
-				value="" />
+				value="" /> <input type="hidden" name="companyId" id="companyId"
+				value="${companyId}">
 			<table id="borderManageTable" border="1">
 				<tr>
 					<td><h4>Seller Details</h4></td>

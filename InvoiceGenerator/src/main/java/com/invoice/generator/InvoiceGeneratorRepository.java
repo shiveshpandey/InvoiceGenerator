@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InvoiceGeneratorRepository {
 
-	public boolean saveInvoiceDetailsToDB(PdfDataCollectionModel pdfDataCollection);
+    public boolean saveInvoiceDetailsToDB(PdfDataCollectionModel pdfDataCollection);
 
-	public List<InvoiceModel> fetchProductListAndCompanyDetailsFromDB();
+    public List<InvoiceModel> fetchProductListFromDB();
+
+    public PdfDataCollectionModel fetchCompanyDetailsFromDB();
 }

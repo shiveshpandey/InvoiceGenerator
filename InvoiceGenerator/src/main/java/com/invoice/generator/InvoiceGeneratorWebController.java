@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -44,29 +45,20 @@ public class InvoiceGeneratorWebController {
 
     @RequestMapping(value = "/loadProduct", method = RequestMethod.GET)
     public String loadProductList(ModelMap model) {
-        InvoiceModel invoiceModel = new InvoiceModel();
-        invoiceModel.setProduct("Product");
-        invoiceModel.setDescription("Product1");
-        invoiceModel.setQuantity(2);
-        invoiceModel.setTax(100);
-        invoiceModel.setTotal(500);
-        invoiceModel.setUnitPrice(200);
-        List<InvoiceModel> productList = new ArrayList<InvoiceModel>();
-        productList.add(invoiceModel);
-        productList.add(invoiceModel);
-        productList.add(invoiceModel);
-        productList.add(invoiceModel);
         try {
-            productList = invoiceGeneratorService.fetchProductListAndCompanyDetailsFromDB();
+            List<InvoiceModel> productList = invoiceGeneratorService.fetchProductListFromDB();
+            PdfDataCollectionModel pdfDataCollectionModel = invoiceGeneratorService
+                    .fetchCompanyDetailsFromDB();
 
             model.addAttribute("productList", productList.toArray());
-            model.addAttribute("companyName", "companyName");
-            model.addAttribute("companyAddress", "companyAddress");
-            model.addAttribute("companyMobile", "companyMobile");
-            model.addAttribute("companyVattin", "companyVattin");
-            model.addAttribute("companyCst", "companyCst");
+            model.addAttribute("companyName", pdfDataCollectionModel.getCompanyName());
+            model.addAttribute("companyAddress", pdfDataCollectionModel.getCompanyAddress());
+            model.addAttribute("companyMobile", pdfDataCollectionModel.getCompanyMobile());
+            model.addAttribute("companyVattin", pdfDataCollectionModel.getCompanyVattin());
+            model.addAttribute("companyCst", pdfDataCollectionModel.getCompanyCst());
+            model.addAttribute("companyId", pdfDataCollectionModel.getCompanyId());
             model.addAttribute("orderId", "orderId");
-            model.addAttribute("orderDate", "orderDate");
+            model.addAttribute("orderDate", new Date());
             return "inventoryItems";
         } catch (Exception e) {
             return "errorPageDBFetch";
@@ -80,13 +72,14 @@ public class InvoiceGeneratorWebController {
             @RequestParam String companyCst, @RequestParam String customerName,
             @RequestParam String customerMobile, @RequestParam String customerAddress,
             @RequestParam String customerEmail, @RequestParam String orderId,
-            @RequestParam String orderDate) throws DocumentException, IOException, ParseException {
+            @RequestParam String companyId, @RequestParam String orderDate)
+            throws DocumentException, IOException, ParseException {
         String userInput = URLDecoder.decode(pdfTextContent, "UTF-8");
 
         PdfDataCollectionModel pdfDataCollection = this.stringToObjectFromUserTextInput(userInput);
         String[] a = { companyName, companyAddress, companyMobile };
-        String[] b = { "This is a computer generated invoice. No signature required.",
-                "Thank you for shopping with us." };
+        String[] b = { InvoiceWebConstants.footerMsg1, InvoiceWebConstants.footerMsg2 };
+        pdfDataCollection.setCompanyId(companyId);
         pdfDataCollection.setCompanyAddress(companyAddress);
         pdfDataCollection.setCompanyCst(companyCst);
         pdfDataCollection.setCompanyMobile(companyMobile);

@@ -12,15 +12,26 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
 
     public boolean saveInvoiceDetailsToDB(PdfDataCollectionModel pdfDataCollection) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName(InvoiceGeneratorQuery.DB_DRIVER_PKG_PATH);
             Connection conn;
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/MYSQL", "root", "root");
+            conn = DriverManager.getConnection(InvoiceGeneratorQuery.DB_CONNECTION_URL,
+                    InvoiceGeneratorQuery.DB_USER, InvoiceGeneratorQuery.DB_PASSWRD);
             Statement stmt;
             stmt = conn.createStatement();
-            String query = "INSERT INTO INVOICE_GENERATOR_SCHEMA.CUSTOMER_DETAILS (order_id,company_id ,customer_name, customer_address, customer_mobile, customer_email,order_date,order_total_price) VALUES ('12345', '12345' ,'12345', '12345','12345','12345','12345','12345');";
+            String query = null;
+            float totalOrderPrice = 0;
+            for (int count = 0; count < pdfDataCollection.getInvoiceModel().size(); count++) {
+                query = new InvoiceGeneratorQuery().insertQueryOrderDetails(
+                        pdfDataCollection.getOrderId(),
+                        pdfDataCollection.getInvoiceModel().get(count));
+                stmt.executeUpdate(query);
+                totalOrderPrice = totalOrderPrice
+                        + Float.valueOf(pdfDataCollection.getInvoiceModel().get(count).getTotal());
+            }
+            query = new InvoiceGeneratorQuery().insertQueryCustomerDetails(pdfDataCollection,
+                    Float.toString(totalOrderPrice));
             stmt.executeUpdate(query);
-            query = "INSERT INTO INVOICE_GENERATOR_SCHEMA.ORDER_DETAILS (order_id,product_id ,product_name, product_description, product_quantity, product_tax,product_discount,product_total) VALUES ('12345', '12345', '12345', '12345','12345','12345','12345','12345');";
-            stmt.executeUpdate(query);
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -31,23 +42,22 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
         return true;
     }
 
-    public List<InvoiceModel> fetchProductListAndCompanyDetailsFromDB() {
+    public List<InvoiceModel> fetchProductListFromDB() {
         List<InvoiceModel> invoiceList = new ArrayList<InvoiceModel>();
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName(InvoiceGeneratorQuery.DB_DRIVER_PKG_PATH);
             Connection conn;
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/MYSQL", "root", "root");
+            conn = DriverManager.getConnection(InvoiceGeneratorQuery.DB_CONNECTION_URL,
+                    InvoiceGeneratorQuery.DB_USER, InvoiceGeneratorQuery.DB_PASSWRD);
             Statement stmt;
             stmt = conn.createStatement();
-            String query = "select company_name,company_address,company_mobile,company_vattin,company_cst  from INVOICE_GENERATOR_SCHEMA.COMPANY_DETAILS where company_id like '%company_1%';";
+            String query = new InvoiceGeneratorQuery().selectQueryProductDetails();
             ResultSet rs = stmt.executeQuery(query);
-
-            query = "select product_name, product_description, product_quantity, product_tax,product_discount,product_total  from INVOICE_GENERATOR_SCHEMA.PRODUCT_DETAILS where company_id like '%company_1%';";
-            rs = stmt.executeQuery(query);
 
             InvoiceModel invoice = null;
             while (rs.next()) {
                 invoice = new InvoiceModel();
+                invoice.setProductId(rs.getString("product_id"));
                 invoice.setProduct(rs.getString("product_name"));
                 invoice.setDescription(rs.getString("product_description"));
                 invoice.setQuantity(Float.parseFloat(rs.getString("product_quantity")));
@@ -62,5 +72,33 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
             e.printStackTrace();
         }
         return invoiceList;
+    }
+
+    public PdfDataCollectionModel fetchCompanyDetailsFromDB() {
+        PdfDataCollectionModel PdfDataCollectionModel = null;
+        try {
+            Class.forName(InvoiceGeneratorQuery.DB_DRIVER_PKG_PATH);
+            Connection conn;
+            conn = DriverManager.getConnection(InvoiceGeneratorQuery.DB_CONNECTION_URL,
+                    InvoiceGeneratorQuery.DB_USER, InvoiceGeneratorQuery.DB_PASSWRD);
+            Statement stmt;
+            stmt = conn.createStatement();
+            String query = new InvoiceGeneratorQuery().selectQueryCompanyDetails();
+            ResultSet rs = stmt.executeQuery(query);
+            PdfDataCollectionModel = new PdfDataCollectionModel();
+
+            PdfDataCollectionModel.setCompanyId(rs.getString("company_id"));
+            PdfDataCollectionModel.setCompanyName(rs.getString("company_name"));
+            PdfDataCollectionModel.setCompanyAddress(rs.getString("company_address"));
+            PdfDataCollectionModel.setCompanyMobile(rs.getString("company_mobile"));
+            PdfDataCollectionModel.setCompanyVattin(rs.getString("company_vattin"));
+            PdfDataCollectionModel.setCompanyCst(rs.getString("company_cst"));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return PdfDataCollectionModel;
     }
 }

@@ -10,12 +10,6 @@ import java.util.List;
 
 public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
 
-    @SuppressWarnings("unused")
-    // CREATE TABLE invoice_generator_schema.product_details (company_id varchar(255),product_id
-    // varchar(255),product_name varchar(255), product_description varchar(255), product_quantity
-    // varchar(255), product_tax varchar(255),product_discount varchar(255),product_total
-    // varchar(255));
-
     public boolean saveInvoiceDetailsToDB(PdfDataCollectionModel pdfDataCollection) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -24,7 +18,7 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
             Statement stmt;
             stmt = conn.createStatement();
             String query = "INSERT INTO INVOICE_GENERATOR_SCHEMA.CUSTOMER_DETAILS (order_id,company_id ,customer_name, customer_address, customer_mobile, customer_email,order_date,order_total_price) VALUES ('12345', '12345' ,'12345', '12345','12345','12345','12345','12345');";
-            ResultSet rs = stmt.executeQuery(query);
+            stmt.executeUpdate(query);
             query = "INSERT INTO INVOICE_GENERATOR_SCHEMA.ORDER_DETAILS (order_id,product_id ,product_name, product_description, product_quantity, product_tax,product_discount,product_total) VALUES ('12345', '12345', '12345', '12345','12345','12345','12345','12345');";
             stmt.executeUpdate(query);
         } catch (SQLException e) {

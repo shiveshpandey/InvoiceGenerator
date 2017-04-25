@@ -155,6 +155,20 @@
 			return true;
 		}
 	}
+	function resetForm()
+	{
+		location.reload();
+	}
+	function resetDataTable()
+	{
+		document.getElementById("product").selectedIndex=0;
+		document.getElementById("description").value='';
+		document.getElementById("quantity").value='';
+		document.getElementById("unitPrice").value='';
+		document.getElementById("tax").value='';
+		document.getElementById("discount").value='';
+		document.getElementById("total").value='';
+	}
 </script>
 <body>
 	<div class="container-fluid" align="center">
@@ -277,7 +291,7 @@
 								<td align="right" colspan="2"><input type="button"
 									name="addRow" id="addRow" value="Add" onClick="addRecord();" /></td>
 								<td align="left" colspan="2"><input type="button"
-									name="reset" id="reset" value="Reset" /></td>
+									name="reset" id="reset" value="Reset" onClick="resetDataTable();"/></td>
 							</tr>
 						</table></td>
 				</tr>
@@ -314,7 +328,7 @@
 									id="generateInvoice" value="Generate Invoice"
 									onClick="return GeneratePdf();" /></td>
 								<td><input type="button" name="cancel" id="cancel"
-									value="     Reset Form     " /></td>
+									value="     Reset Form     " onClick="resetForm();"/></td>
 							</tr>
 						</table>
 					</td>

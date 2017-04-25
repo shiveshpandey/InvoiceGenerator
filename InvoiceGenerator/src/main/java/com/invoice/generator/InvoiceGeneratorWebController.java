@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLDecoder;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,8 +59,13 @@ public class InvoiceGeneratorWebController {
             model.addAttribute("companyVattin", pdfDataCollectionModel.getCompanyVattin());
             model.addAttribute("companyCst", pdfDataCollectionModel.getCompanyCst());
             model.addAttribute("companyId", pdfDataCollectionModel.getCompanyId());
-            model.addAttribute("orderId", "orderId");
-            model.addAttribute("orderDate", new Date());
+            model.addAttribute("orderId", pdfDataCollectionModel.getOrderId());
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");// new
+                                                                      // SimpleDateFormat("dd-MM-yyyy
+                                                                      // hh:mm a");
+            String orderDate = formatter.format(new Date());
+
+            model.addAttribute("orderDate", orderDate);
             return "inventoryItems";
         } catch (Exception e) {
             return "errorPageDBFetch";

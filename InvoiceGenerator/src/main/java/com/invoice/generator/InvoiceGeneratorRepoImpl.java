@@ -86,7 +86,8 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
             String query = new InvoiceGeneratorQuery().selectQueryCompanyDetails();
             ResultSet rs = stmt.executeQuery(query);
             PdfDataCollectionModel = new PdfDataCollectionModel();
-
+            rs.beforeFirst();
+            rs.next();
             PdfDataCollectionModel.setCompanyId(rs.getString("company_id"));
             PdfDataCollectionModel.setCompanyName(rs.getString("company_name"));
             PdfDataCollectionModel.setCompanyAddress(rs.getString("company_address"));
@@ -94,6 +95,7 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
             PdfDataCollectionModel.setCompanyVattin(rs.getString("company_vattin"));
             PdfDataCollectionModel.setCompanyCst(rs.getString("company_cst"));
 
+            PdfDataCollectionModel.setOrderId("orderId");
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

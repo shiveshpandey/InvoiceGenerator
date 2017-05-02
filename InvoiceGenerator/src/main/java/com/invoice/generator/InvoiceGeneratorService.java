@@ -2,13 +2,14 @@ package com.invoice.generator;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
-@Service
 public interface InvoiceGeneratorService {
 
-	public boolean saveInvoiceDetailsToDB(PdfDataCollectionModel pdfDataCollection);
+    public boolean saveInvoiceDetailsToDB(PdfDataCollectionModel pdfDataCollection);
 
-	public List<InvoiceModel> fetchProductListAndCompanyDetailsFromDB();
+    public List<InvoiceModel> fetchProductListFromDB(int companyId);
+
+    public boolean addProductToDB(InvoiceModel invoiceModel);
+
+    public PdfDataCollectionModel fetchCompanyDetailsFromDB(int companyId);
 
 }

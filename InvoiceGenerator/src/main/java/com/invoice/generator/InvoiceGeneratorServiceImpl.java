@@ -2,18 +2,24 @@ package com.invoice.generator;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 public class InvoiceGeneratorServiceImpl implements InvoiceGeneratorService {
-	@Autowired
-	InvoiceGeneratorRepository invoiceGeneratorRepository;
 
-	public boolean saveInvoiceDetailsToDB(PdfDataCollectionModel pdfDataCollection) {
-		return invoiceGeneratorRepository.saveInvoiceDetailsToDB(pdfDataCollection);
-	}
+    InvoiceGeneratorRepository invoiceGeneratorRepository = new InvoiceGeneratorRepoImpl();
 
-	public List<InvoiceModel> fetchProductListAndCompanyDetailsFromDB() {
-		return invoiceGeneratorRepository.fetchProductListAndCompanyDetailsFromDB();
-	}
+    public boolean saveInvoiceDetailsToDB(PdfDataCollectionModel pdfDataCollection) {
+        return invoiceGeneratorRepository.saveInvoiceDetailsToDB(pdfDataCollection);
+    }
+
+    public List<InvoiceModel> fetchProductListFromDB(int companyId) {
+        return invoiceGeneratorRepository.fetchProductListFromDB(companyId);
+    }
+
+    public PdfDataCollectionModel fetchCompanyDetailsFromDB(int companyId) {
+        return invoiceGeneratorRepository.fetchCompanyDetailsFromDB(companyId);
+    }
+
+    public boolean addProductToDB(InvoiceModel invoiceModel) {
+        return invoiceGeneratorRepository.addProductToDB(invoiceModel);
+    }
 
 }

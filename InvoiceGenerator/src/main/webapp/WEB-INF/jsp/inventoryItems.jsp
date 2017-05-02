@@ -127,7 +127,8 @@
 			var cell8 = row.insertCell(8);
 
 			cell0.innerHTML = table.rows.length - 1;
-			cell1.innerHTML = document.getElementById("product").options[document.getElementById("product").selectedIndex].innerHTML;
+			cell1.innerHTML = document.getElementById("product").options[document
+					.getElementById("product").selectedIndex].innerHTML;
 			cell2.innerHTML = document.getElementById("description").value;
 			cell3.innerHTML = document.getElementById("quantity").value;
 			cell4.innerHTML = document.getElementById("unitPrice").value;
@@ -345,6 +346,12 @@
 				</tbody>
 			</table>
 		</form>
+		<table style="width: 55%">
+			<tr>
+				<td align="left"><h5><a href="home">Home page</a></h5> >></td>
+				<td align="right"><h5><a href="addProduct">Add Product page</a></h5> >></td>
+			</tr>
+		</table>
 	</div>
 	<script>
 		onloadProductListPopulate();

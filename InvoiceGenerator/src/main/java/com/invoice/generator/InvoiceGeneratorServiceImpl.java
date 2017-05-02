@@ -10,12 +10,12 @@ public class InvoiceGeneratorServiceImpl implements InvoiceGeneratorService {
         return invoiceGeneratorRepository.saveInvoiceDetailsToDB(pdfDataCollection);
     }
 
-    public List<InvoiceModel> fetchProductListFromDB() {
-        return invoiceGeneratorRepository.fetchProductListFromDB();
+    public List<InvoiceModel> fetchProductListFromDB(int companyId) {
+        return invoiceGeneratorRepository.fetchProductListFromDB(companyId);
     }
 
-    public PdfDataCollectionModel fetchCompanyDetailsFromDB() {
-        return invoiceGeneratorRepository.fetchCompanyDetailsFromDB();
+    public PdfDataCollectionModel fetchCompanyDetailsFromDB(int companyId) {
+        return invoiceGeneratorRepository.fetchCompanyDetailsFromDB(companyId);
     }
 
     public boolean addProductToDB(InvoiceModel invoiceModel) {

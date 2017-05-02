@@ -9,9 +9,9 @@ public interface InvoiceGeneratorRepository {
 
     public boolean saveInvoiceDetailsToDB(PdfDataCollectionModel pdfDataCollection);
 
-    public List<InvoiceModel> fetchProductListFromDB();
+    public List<InvoiceModel> fetchProductListFromDB(int companyId);
 
-    public PdfDataCollectionModel fetchCompanyDetailsFromDB();
+    public PdfDataCollectionModel fetchCompanyDetailsFromDB(int companyId);
 
     public boolean addProductToDB(InvoiceModel invoiceModel);
 }

@@ -42,7 +42,7 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
         return true;
     }
 
-    public List<InvoiceModel> fetchProductListFromDB() {
+    public List<InvoiceModel> fetchProductListFromDB(int companyId) {
         List<InvoiceModel> invoiceList = new ArrayList<InvoiceModel>();
         try {
             Class.forName(InvoiceGeneratorQuery.DB_DRIVER_PKG_PATH);
@@ -51,19 +51,19 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
                     InvoiceGeneratorQuery.DB_USER, InvoiceGeneratorQuery.DB_PASSWRD);
             Statement stmt;
             stmt = conn.createStatement();
-            String query = new InvoiceGeneratorQuery().selectQueryProductDetails();
+            String query = new InvoiceGeneratorQuery().selectQueryProductDetails(companyId);
             ResultSet rs = stmt.executeQuery(query);
 
             InvoiceModel invoice = null;
             while (rs.next()) {
                 invoice = new InvoiceModel();
-                invoice.setProductId(rs.getString("product_id"));
+                invoice.setProductId(rs.getInt("product_id"));
                 invoice.setProduct(rs.getString("product_name"));
                 invoice.setDescription(rs.getString("product_description"));
                 invoice.setQuantity(Float.parseFloat(rs.getString("product_quantity")));
                 invoice.setTax(Float.parseFloat(rs.getString("product_tax")));
                 invoice.setDiscount(Float.parseFloat(rs.getString("product_discount")));
-                invoice.setTotal(Float.parseFloat(rs.getString("product_total")));
+                // invoice.setTotal(Float.parseFloat(rs.getString("product_total")));
                 invoiceList.add(invoice);
             }
         } catch (SQLException e) {
@@ -74,7 +74,7 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
         return invoiceList;
     }
 
-    public PdfDataCollectionModel fetchCompanyDetailsFromDB() {
+    public PdfDataCollectionModel fetchCompanyDetailsFromDB(int companyId) {
         PdfDataCollectionModel PdfDataCollectionModel = null;
         try {
             Class.forName(InvoiceGeneratorQuery.DB_DRIVER_PKG_PATH);
@@ -83,19 +83,24 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
                     InvoiceGeneratorQuery.DB_USER, InvoiceGeneratorQuery.DB_PASSWRD);
             Statement stmt;
             stmt = conn.createStatement();
-            String query = new InvoiceGeneratorQuery().selectQueryCompanyDetails();
+            String query = new InvoiceGeneratorQuery().selectQueryCompanyDetails(companyId);
             ResultSet rs = stmt.executeQuery(query);
             PdfDataCollectionModel = new PdfDataCollectionModel();
             rs.beforeFirst();
             rs.next();
-            PdfDataCollectionModel.setCompanyId(rs.getString("company_id"));
+            PdfDataCollectionModel.setCompanyId(rs.getInt("company_id"));
             PdfDataCollectionModel.setCompanyName(rs.getString("company_name"));
             PdfDataCollectionModel.setCompanyAddress(rs.getString("company_address"));
             PdfDataCollectionModel.setCompanyMobile(rs.getString("company_mobile"));
             PdfDataCollectionModel.setCompanyVattin(rs.getString("company_vattin"));
             PdfDataCollectionModel.setCompanyCst(rs.getString("company_cst"));
 
-            PdfDataCollectionModel.setOrderId("orderId");
+            query = new InvoiceGeneratorQuery().getNextOrderIdSequence();
+            rs = stmt.executeQuery(query);
+            rs.beforeFirst();
+            rs.next();
+            PdfDataCollectionModel.setOrderId(rs.getInt(1) + 1);
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -112,7 +117,12 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
                     InvoiceGeneratorQuery.DB_USER, InvoiceGeneratorQuery.DB_PASSWRD);
             Statement stmt;
             stmt = conn.createStatement();
-            String query = new InvoiceGeneratorQuery().insertQueryAddProductToDB(invoiceModel);
+            String query = new InvoiceGeneratorQuery().getNextProductIdSequence();
+            ResultSet rs = stmt.executeQuery(query);
+            rs.beforeFirst();
+            rs.next();
+            invoiceModel.setProductId(rs.getInt(1) + 1);
+            query = new InvoiceGeneratorQuery().insertQueryAddProductToDB(invoiceModel);
             stmt.executeUpdate(query);
 
         } catch (SQLException e) {

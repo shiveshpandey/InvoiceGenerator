@@ -3,12 +3,12 @@
 	href="https://www.w3schools.com/lib/w3-theme-indigo.css">
 
 <script type="text/javascript">
-	function validateAddRowData() {
+	function validateData() {
 		if (null == document.getElementById("product").value
 				|| "" == document.getElementById("product").value) {
 			document.getElementById("product").value = "";
 			document.getElementById("product").focus();
-			alert("Please select a valid Product Name");
+			alert("Please provide a valid Product Name");
 			return false;
 		} else if (null == document.getElementById("description").value
 				|| "" == document.getElementById("description").value) {
@@ -44,13 +44,6 @@
 			document.getElementById("discount").focus();
 			alert("Please provide a valid discount percentage");
 			return false;
-		} else if (isNaN(document.getElementById("total").value)
-				|| null == document.getElementById("total").value
-				|| "" == document.getElementById("total").value) {
-			document.getElementById("total").value = "";
-			document.getElementById("total").focus();
-			alert("Please provide a valid total value");
-			return false;
 		} else {
 			document.getElementById("quantity").value = checkPrecision(document
 					.getElementById("quantity"));
@@ -60,35 +53,10 @@
 					.getElementById("discount"));
 			document.getElementById("tax").value = checkPrecision(document
 					.getElementById("tax"));
-			document.getElementById("total").value = checkPrecision(document
-					.getElementById("total"));
+
 			return true;
 		}
 
-	}
-	function GeneratePdf() {
-		var str = "";
-		var table = document.getElementById("addRowTable");
-		for (var r = 1; r < table.rows.length; r++) {
-			if (table.rows[r].cells[8].innerHTML != "deleted") {
-				str = str + table.rows[r].cells[0].innerHTML + "##"
-						+ table.rows[r].cells[1].innerHTML + "##"
-						+ table.rows[r].cells[2].innerHTML + "##"
-						+ table.rows[r].cells[3].innerHTML + "##"
-						+ table.rows[r].cells[4].innerHTML + "##"
-						+ table.rows[r].cells[5].innerHTML + "##"
-						+ table.rows[r].cells[6].innerHTML + "##"
-						+ table.rows[r].cells[7].innerHTML + "##"
-						+ table.rows[r].cells[1].id + "@@@";
-			}
-		}
-		if (str == "" || str == null) {
-			alert("Please add atleast one product");
-			return false;
-		} else {
-			document.getElementById("pdfTextContent").value = str;
-			return true;
-		}
 	}
 </script>
 <body>
@@ -99,38 +67,45 @@
 		</div>
 		<form action="addNewProduct" method="post"
 			enctype="application/x-www-form-urlencoded">
-			${msgToUser}
+			<input type="hidden" name="companyId" id="companyId"
+				value="${companyId}">
+			<div style="background-color: #DEB887">
+				<h4>${msgToUser}</h4>
+			</div>
 			<table id="borderManageTable" border="1" class="w3-table w3-striped"
-				style="width: 80%">
+				style="width: 800px">
 				<tr>
 					<td><table>
 							<tr>
 								<td>Product</td>
-								<td><input type="text" name="product" style="width: 180px" id="product" value=""></td>
+								<td><input type="text" name="product" style="width: 180px"
+									id="product" value=""></td>
 								<td>&nbsp;Default Quantity</td>
-								<td><input type="text" style="width: 180px" name="quantity" id="quantity"
-									value=""></td>
+								<td><input type="text" style="width: 180px" name="quantity"
+									id="quantity" value=""></td>
 							</tr>
 							<tr>
 								<td rowspan="3">Description</td>
-								<td rowspan="3"><textarea rows="6" cols="20" style="width: 180px"
-										name="description" id="description"></textarea></td>
+								<td rowspan="3"><textarea rows="6" cols="20"
+										style="width: 180px" name="description" id="description"></textarea></td>
 								<td>&nbsp;Unit Price (&#8377;)</td>
-								<td><input type="text" style="width: 180px" name="unitPrice" id="unitPrice"
-									value=""></td>
+								<td><input type="text" style="width: 180px"
+									name="unitPrice" id="unitPrice" value=""></td>
 							</tr>
 							<tr>
 								<td>Default Tax (&#8377;)</td>
-								<td><input type="text" style="width: 180px"name="tax" id="tax" value=""></td>
+								<td><input type="text" style="width: 180px" name="tax"
+									id="tax" value=""></td>
 							</tr>
 							<tr>
 								<td>Default Discount (&#8377;)</td>
-								<td><input type="text" style="width: 180px" name="discount" id="discount"
-									value=""></td>
+								<td><input type="text" style="width: 180px" name="discount"
+									id="discount" value=""></td>
 							</tr>
 							<tr>
 								<td align="center" colspan="4"><div align="center">
 										<input type="submit" name="Add Product" id=" Add Product "
+											onclick="return validateData();"
 											value="&nbsp;&nbsp;&nbsp;&nbsp;Add Product&nbsp;&nbsp;&nbsp;&nbsp;" />
 									</div></td>
 							</tr>
@@ -138,5 +113,11 @@
 				</tr>
 			</table>
 		</form>
+		<table style="width: 50%">
+			<tr>
+				<td align="left"><h5><a href="home">Home page</a> >></h5></td>
+				<td align="right"><h5><a href="loadProduct">Invoice Generation page</a></h5> >></td>
+			</tr>
+		</table>
 	</div>
 </body>

@@ -6,7 +6,8 @@ import java.io.Serializable;
 public class InvoiceModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String productId;
+    private int productId;
+    private int companyId;
     private String product;
     private String description;
     private float quantity;
@@ -71,12 +72,20 @@ public class InvoiceModel implements Serializable {
         this.total = total;
     }
 
-    public String getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 
 }

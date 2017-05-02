@@ -48,9 +48,9 @@ public class InvoiceGeneratorWebController {
     @RequestMapping(value = "/loadProduct", method = RequestMethod.GET)
     public String loadProductList(ModelMap model) {
         try {
-            List<InvoiceModel> productList = invoiceGeneratorService.fetchProductListFromDB();
+            List<InvoiceModel> productList = invoiceGeneratorService.fetchProductListFromDB(1);
             PdfDataCollectionModel pdfDataCollectionModel = invoiceGeneratorService
-                    .fetchCompanyDetailsFromDB();
+                    .fetchCompanyDetailsFromDB(1);
 
             model.addAttribute("productList", productList.toArray());
             model.addAttribute("companyName", pdfDataCollectionModel.getCompanyName());
@@ -74,15 +74,20 @@ public class InvoiceGeneratorWebController {
 
     @RequestMapping(value = "/addProduct", method = RequestMethod.GET)
     public String loadAddProduct(ModelMap model) {
-
+        model.addAttribute("companyId", 1);
         return "addProduct";
+    }
+
+    @RequestMapping(value = "/home", method = RequestMethod.GET)
+    public String loadHome(ModelMap model) {
+        return "index";
     }
 
     @RequestMapping(value = "/addNewProduct", method = RequestMethod.POST)
     public String addNewProduct(ModelMap model, @RequestParam String product,
             @RequestParam String description, @RequestParam String tax,
             @RequestParam String discount, @RequestParam String unitPrice,
-            @RequestParam String quantity) {
+            @RequestParam String quantity, @RequestParam String companyId) {
         InvoiceModel invoiceModel = new InvoiceModel();
         invoiceModel.setDescription(description);
         invoiceModel.setDiscount(Float.parseFloat(discount));
@@ -90,7 +95,10 @@ public class InvoiceGeneratorWebController {
         invoiceModel.setQuantity(Float.parseFloat(quantity));
         invoiceModel.setTax(Float.parseFloat(tax));
         invoiceModel.setUnitPrice(Float.parseFloat(unitPrice));
+        invoiceModel.setCompanyId(Integer.parseInt(companyId));
+
         boolean dbOperationStatus = invoiceGeneratorService.addProductToDB(invoiceModel);
+        model.addAttribute("companyId", 1);
         if (dbOperationStatus)
             model.addAttribute("msgToUser", "New Product: " + product + " added successfully.");
         else
@@ -112,7 +120,7 @@ public class InvoiceGeneratorWebController {
         PdfDataCollectionModel pdfDataCollection = this.stringToObjectFromUserTextInput(userInput);
         String[] a = { companyName, companyAddress, companyMobile };
         String[] b = { InvoiceWebConstants.footerMsg1, InvoiceWebConstants.footerMsg2 };
-        pdfDataCollection.setCompanyId(companyId);
+        pdfDataCollection.setCompanyId(Integer.parseInt(companyId));
         pdfDataCollection.setCompanyAddress(companyAddress);
         pdfDataCollection.setCompanyCst(companyCst);
         pdfDataCollection.setCompanyMobile(companyMobile);
@@ -125,7 +133,7 @@ public class InvoiceGeneratorWebController {
         pdfDataCollection.setHeader(a);
         pdfDataCollection.setFooter(b);
         pdfDataCollection.setOrderDate(orderDate);
-        pdfDataCollection.setOrderId(orderId);
+        pdfDataCollection.setOrderId(Integer.parseInt(orderId));
 
         if (invoiceGeneratorService.saveInvoiceDetailsToDB(pdfDataCollection)) {
             this.generateInvoicePdf(pdfDataCollection);
@@ -149,7 +157,7 @@ public class InvoiceGeneratorWebController {
             product.setTax(Float.parseFloat(cells[5]));
             product.setDiscount(Float.parseFloat(cells[6]));
             product.setTotal(Float.parseFloat(cells[7]));
-            product.setProductId(cells[8]);
+            product.setProductId(Integer.parseInt(cells[8]));
             productList.add(product);
         }
         PdfDataCollectionModel pdfDataCollectionModel = new PdfDataCollectionModel();
@@ -267,8 +275,8 @@ public class InvoiceGeneratorWebController {
         cell01.setBorder(Rectangle.TOP);
         headerTable.addCell(cell01);
 
-        cell01 = new PdfPCell(
-                new Phrase(pdfDataCollection.getOrderId(), InvoiceWebConstants.font1));
+        cell01 = new PdfPCell(new Phrase(String.valueOf(pdfDataCollection.getOrderId()),
+                InvoiceWebConstants.font1));
         cell01.setBorder(Rectangle.TOP);
         headerTable.addCell(cell01);
 

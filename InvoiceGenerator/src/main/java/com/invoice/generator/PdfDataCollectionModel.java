@@ -3,8 +3,8 @@ package com.invoice.generator;
 import java.util.List;
 
 public class PdfDataCollectionModel {
-    private String orderId;
-    private String companyId;
+    private int orderId;
+    private int companyId;
     private String companyName;
     private String companyAddress;
     private String companyMobile;
@@ -19,11 +19,11 @@ public class PdfDataCollectionModel {
     private String[] footer;
     List<InvoiceModel> invoiceModel;
 
-    public String getOrderId() {
+    public int getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
 
@@ -131,11 +131,11 @@ public class PdfDataCollectionModel {
         this.orderDate = orderDate;
     }
 
-    public String getCompanyId() {
+    public int getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(String companyId) {
+    public void setCompanyId(int companyId) {
         this.companyId = companyId;
     }
 

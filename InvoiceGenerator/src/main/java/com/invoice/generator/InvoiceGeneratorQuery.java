@@ -18,29 +18,40 @@ public class InvoiceGeneratorQuery {
                 + "','" + totalOrderPrice + "');";
     }
 
-    public String insertQueryOrderDetails(String orderId, InvoiceModel invoiceModel) {
+    public String insertQueryOrderDetails(int orderId, InvoiceModel invoiceModel) {
         return "INSERT INTO INVOICE_GENERATOR_SCHEMA.ORDER_DETAILS "
                 + "(order_id,product_id ,product_name, product_description, product_quantity, product_tax,product_discount,product_total)"
-                + " VALUES ('" + orderId + "', '" + invoiceModel.getProductId() + "', '"
+                + " VALUES (" + orderId + ", " + invoiceModel.getProductId() + ", '"
                 + invoiceModel.getProduct() + "', '" + invoiceModel.getDescription() + "','"
                 + invoiceModel.getQuantity() + "','" + invoiceModel.getTax() + "','"
                 + invoiceModel.getDiscount() + "','" + invoiceModel.getTotal() + "');";
     }
 
-    public String selectQueryProductDetails() {
+    public String selectQueryProductDetails(int companyId) {
 
-        return "select product_id,product_name, product_description, product_quantity, product_tax,product_discount,product_total  from INVOICE_GENERATOR_SCHEMA.PRODUCT_DETAILS where company_id like '%company_1%';";
+        return "select product_id,product_name, product_description, product_quantity, product_tax,product_discount,product_total  from INVOICE_GENERATOR_SCHEMA.PRODUCT_DETAILS where company_id ="
+                + companyId + ";";
     }
 
-    public String selectQueryCompanyDetails() {
-        return "select company_id,company_name,company_address,company_mobile,company_vattin,company_cst  from INVOICE_GENERATOR_SCHEMA.COMPANY_DETAILS where company_id like '%company_1%';";
+    public String selectQueryCompanyDetails(int companyId) {
+        return "select company_id,company_name,company_address,company_mobile,company_vattin,company_cst  from INVOICE_GENERATOR_SCHEMA.COMPANY_DETAILS where company_id ="
+                + companyId + ";";
     }
 
     public String insertQueryAddProductToDB(InvoiceModel invoiceModel) {
         return "INSERT INTO INVOICE_GENERATOR_SCHEMA.Product_DETAILS "
-                + "(product_id ,product_name, product_description, product_quantity, product_tax,product_discount)"
-                + " VALUES ('" + invoiceModel.getProductId() + "', '" + invoiceModel.getProduct()
-                + "', '" + invoiceModel.getDescription() + "','" + invoiceModel.getQuantity()
-                + "','" + invoiceModel.getTax() + "','" + invoiceModel.getDiscount() + "');";
+                + "(company_id,product_id ,product_name, product_description, product_quantity, product_tax,product_discount)"
+                + " VALUES ('" + invoiceModel.getCompanyId() + "','" + invoiceModel.getProductId()
+                + "', '" + invoiceModel.getProduct() + "', '" + invoiceModel.getDescription()
+                + "','" + invoiceModel.getQuantity() + "','" + invoiceModel.getTax() + "','"
+                + invoiceModel.getDiscount() + "');";
+    }
+
+    public String getNextOrderIdSequence() {
+        return "SELECT MAX(order_id) FROM INVOICE_GENERATOR_SCHEMA.ORDER_DETAILS;";
+    }
+
+    public String getNextProductIdSequence() {
+        return "SELECT MAX(product_id) FROM INVOICE_GENERATOR_SCHEMA.Product_DETAILS;";
     }
 }

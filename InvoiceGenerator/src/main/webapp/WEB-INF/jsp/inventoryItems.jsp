@@ -2,7 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-indigo.css">
+<link rel="stylesheet"
+	href="https://www.w3schools.com/lib/w3-theme-indigo.css">
 
 <script type="text/javascript">
 	function onProductChangeValueReset() {
@@ -10,7 +11,7 @@
 		var index = document.getElementById("product").selectedIndex;
 		<c:forEach items="${productList}" var="item">
 		if (index == count++) {
-			document.getElementById("product").value = "${item.product}";
+			document.getElementById("product").value = "${item.productId}";
 			document.getElementById("description").value = "${item.description}";
 			document.getElementById("quantity").value = 1;
 			document.getElementById("unitPrice").value = "${item.unitPrice}";
@@ -25,7 +26,8 @@
 		var product = document.getElementById("product");
 		<c:forEach items="${productList}" var="item">
 		var option = document.createElement('option');
-		option.text = option.value = "${item.product}";
+		option.text = "${item.product}";
+		option.value = "${item.productId}";
 		product.add(option, i++);
 		</c:forEach>
 	}
@@ -125,7 +127,7 @@
 			var cell8 = row.insertCell(8);
 
 			cell0.innerHTML = table.rows.length - 1;
-			cell1.innerHTML = document.getElementById("product").value;
+			cell1.innerHTML = document.getElementById("product").options[document.getElementById("product").selectedIndex].innerHTML;
 			cell2.innerHTML = document.getElementById("description").value;
 			cell3.innerHTML = document.getElementById("quantity").value;
 			cell4.innerHTML = document.getElementById("unitPrice").value;
@@ -134,6 +136,7 @@
 			cell7.innerHTML = document.getElementById("total").value;
 			cell8.innerHTML = "<button type='button' onclick='deleteRow(" + '"'
 					+ (table.rows.length - 1) + '"' + ")' >Delete</button>";
+			cell1.id = document.getElementById("product").value;
 		}
 	}
 	function GeneratePdf() {
@@ -148,7 +151,8 @@
 						+ table.rows[r].cells[4].innerHTML + "##"
 						+ table.rows[r].cells[5].innerHTML + "##"
 						+ table.rows[r].cells[6].innerHTML + "##"
-						+ table.rows[r].cells[7].innerHTML + "@@@";
+						+ table.rows[r].cells[7].innerHTML + "##"
+						+ table.rows[r].cells[1].id + "@@@";
 			}
 		}
 		if (str == "" || str == null) {
@@ -159,173 +163,185 @@
 			return true;
 		}
 	}
-	function resetForm()
-	{
+	function resetForm() {
 		location.reload();
 	}
-	function resetDataTable()
-	{
-		document.getElementById("product").selectedIndex=0;
-		document.getElementById("description").value='';
-		document.getElementById("quantity").value='';
-		document.getElementById("unitPrice").value='';
-		document.getElementById("tax").value='';
-		document.getElementById("discount").value='';
-		document.getElementById("total").value='';
+	function resetDataTable() {
+		document.getElementById("product").selectedIndex = 0;
+		document.getElementById("description").value = '';
+		document.getElementById("quantity").value = '';
+		document.getElementById("unitPrice").value = '';
+		document.getElementById("tax").value = '';
+		document.getElementById("discount").value = '';
+		document.getElementById("total").value = '';
 	}
 </script>
 <body>
 	<div class="w3-card-4" align="center">
-	
-	<div class="w3-container w3-theme w3-card-2">
-  <h2>Invoice/Bill Form</h2>
-</div>
+
+		<div class="w3-container w3-theme w3-card-2">
+			<h2>Invoice/Bill Form</h2>
+		</div>
 		<form action="generateInvoice" method="post"
 			enctype="application/x-www-form-urlencoded">
 			<input type="hidden" name="pdfTextContent" id="pdfTextContent"
 				value="" /> <input type="hidden" name="companyId" id="companyId"
 				value="${companyId}">
-			<table id="borderManageTable" border="1" class="w3-table w3-striped" style="width: 55%">
+			<table id="borderManageTable" border="1" class="w3-table w3-striped"
+				style="width: 55%">
 				<thead>
-				<tr style="background-color: #DEB887">
-					<th>Seller Details</th>
-					<th>Customer Details</th>
-				</tr>
+					<tr style="background-color: #DEB887">
+						<th>Seller Details</th>
+						<th>Customer Details</th>
+					</tr>
 				</thead>
 				<tbody>
-				<tr></tr>
-				<tr>
-					<td>
-						<table>
-							<tr>
-								<td>Name</td>
-								<td><input type="text" name="companyName" id="companyName" value="${companyName}"></td>
-							</tr>
-							<tr>
-								<td>Address</td>
-								<td><textarea rows="4" cols="20" name="companyAddress"
-										id="companyAddress">${companyAddress}</textarea></td>
-							</tr>
-							<tr>
-								<td>Mobile/Tel</td>
-								<td><input type="text" name="companyMobile" id="companyMobile"
-									value="${companyMobile}"></td>
-							</tr>
-							<tr>
-								<td>VAT/TIN #</td>
-								<td><input type="text" name="companyVattin" id="companyVattin"
-									value="${companyVattin}"></td>
-							</tr>
-							<tr>
-								<td>CST #</td>
-								<td><input type="text" name="companyCst" id="companyCst" value="${companyCst}"></td>
-							</tr>
-						</table>
-					</td>
-					<td>
-						<table>
-							<tr>
-								<td>Name</td>
-								<td><input type="text" name="customerName" id="customerName" value=""></td>
-							</tr>
-							<tr>
-								<td>Address</td>
-								<td><textarea rows="6" cols="20" name="customerAddress"
-										id="customerAddress"></textarea></td>
-							</tr>
-							<tr>
-								<td>Mobile/Tel</td>
-								<td><input type="text" name="customerMobile" id="customerMobile" value=""></td>
-							</tr>
-							<tr>
-								<td>Email</td>
-								<td><input type="text" name="customerEmail" id="customerEmail" value=""></td>
-							</tr>
-							<tr>
-								<td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td>&nbsp;&nbsp;Order ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
-						type="text" name="orderId" id="orderId" value="${orderId}"></td>
-					<td>&nbsp;&nbsp;Order Date&nbsp;&nbsp;&nbsp;<input type="text" name="orderDate" id="orderDate" value="${orderDate}"></td>
-				</tr>
-				<tr>
-					<td colspan="2"><table>
-							<tr>
-								<td> Product</td>
-								<td ><select name="product" id="product" style="width: 100%" onchange="onProductChangeValueReset();">
-								</select></td>
-								<td>&nbsp;Quantity</td>
-								<td><input type="text" name="quantity"
-									id="quantity" value=""></td>
-							</tr>
-							<tr>
-								<td rowspan="4"> Description</td>
-								<td rowspan="4" ><textarea rows="6" cols="20"
-										name="description" id="description"></textarea></td>
-								<td>&nbsp;Unit Price (&#8377;)</td>
-								<td><input type="text" name="unitPrice" id="unitPrice" value=""></td>
-							</tr>
-							<tr>
-								<td>Tax (&#8377;)</td>
-								<td><input type="text" name="tax"
-									id="tax" value=""></td>
-							</tr>
-							<tr>
-								<td>Discount (&#8377;)</td>
-								<td><input type="text" name="discount"
-									id="discount" value=""></td>
-							</tr>
-							<tr>
-								<td>Total (&#8377;)</td>
-								<td><input type="text" name="total"
-									id="total" value=""></td>
-							</tr>
-							<tr>
-								<td align="right" colspan="4"><div align="center"><input type="button"
-									name="addRow" id="addRow" value="Add" onClick="addRecord();" />&nbsp;&nbsp;&nbsp;&nbsp;
-								<input type="button"
-									name="reset" id="reset" value="Reset" onClick="resetDataTable();"/></div></td>
-							</tr>
-						</table></td>
-				</tr>
-				<tr>
-					<td colspan="2"><table id="addRowTable" border="1" class="w3-table w3-striped">
-							<thead>
-								<tr style="background-color: #DEB887">
-									<th>S No</th>
-									<th>Product</th>
-									<th>Desc</th>
-									<th>Qty</th>
-									<th>Price</th>
-									<th>Tax</th>
-									<th>Discount</th>
-									<th>Total</th>
-									<th>*</th>
+					<tr></tr>
+					<tr>
+						<td>
+							<table>
+								<tr>
+									<td>Name</td>
+									<td><input type="text" name="companyName" id="companyName"
+										value="${companyName}"></td>
 								</tr>
-							</thead>
-						</table></td>
-				</tr>
-				<tr>
-					<td colspan="2" align="center"><div id="noProductMsg" align="center">no
-							products added</div></td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<table class="w3-striped" style="width: 100%">
-							<tr>
-							<td><div align="center"><input type="submit" name="generateInvoice"
-									id="generateInvoice" value="Generate Invoice"
-									onClick="return GeneratePdf();" />&nbsp;&nbsp;&nbsp;&nbsp;
-								<input type="button" name="cancel" id="cancel"
-									value="     Reset Form     " onClick="resetForm();"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
-							</tr>
-						</table>
-					</td>
-				</tr>
+								<tr>
+									<td>Address</td>
+									<td><textarea rows="4" cols="20" name="companyAddress"
+											id="companyAddress">${companyAddress}</textarea></td>
+								</tr>
+								<tr>
+									<td>Mobile/Tel</td>
+									<td><input type="text" name="companyMobile"
+										id="companyMobile" value="${companyMobile}"></td>
+								</tr>
+								<tr>
+									<td>VAT/TIN #</td>
+									<td><input type="text" name="companyVattin"
+										id="companyVattin" value="${companyVattin}"></td>
+								</tr>
+								<tr>
+									<td>CST #</td>
+									<td><input type="text" name="companyCst" id="companyCst"
+										value="${companyCst}"></td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table>
+								<tr>
+									<td>Name</td>
+									<td><input type="text" name="customerName"
+										id="customerName" value=""></td>
+								</tr>
+								<tr>
+									<td>Address</td>
+									<td><textarea rows="6" cols="20" name="customerAddress"
+											id="customerAddress"></textarea></td>
+								</tr>
+								<tr>
+									<td>Mobile/Tel</td>
+									<td><input type="text" name="customerMobile"
+										id="customerMobile" value=""></td>
+								</tr>
+								<tr>
+									<td>Email</td>
+									<td><input type="text" name="customerEmail"
+										id="customerEmail" value=""></td>
+								</tr>
+								<tr>
+									<td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;Order
+							ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text"
+							name="orderId" id="orderId" value="${orderId}">
+						</td>
+						<td>&nbsp;&nbsp;Order Date&nbsp;&nbsp;&nbsp;<input
+							type="text" name="orderDate" id="orderDate" value="${orderDate}"></td>
+					</tr>
+					<tr>
+						<td colspan="2"><table>
+								<tr>
+									<td>Product</td>
+									<td><select name="product" id="product"
+										style="width: 100%" onchange="onProductChangeValueReset();">
+									</select></td>
+									<td>&nbsp;Quantity</td>
+									<td><input type="text" name="quantity" id="quantity"
+										value=""></td>
+								</tr>
+								<tr>
+									<td rowspan="4">Description</td>
+									<td rowspan="4"><textarea rows="6" cols="20"
+											name="description" id="description"></textarea></td>
+									<td>&nbsp;Unit Price (&#8377;)</td>
+									<td><input type="text" name="unitPrice" id="unitPrice"
+										value=""></td>
+								</tr>
+								<tr>
+									<td>Tax (&#8377;)</td>
+									<td><input type="text" name="tax" id="tax" value=""></td>
+								</tr>
+								<tr>
+									<td>Discount (&#8377;)</td>
+									<td><input type="text" name="discount" id="discount"
+										value=""></td>
+								</tr>
+								<tr>
+									<td>Total (&#8377;)</td>
+									<td><input type="text" name="total" id="total" value=""></td>
+								</tr>
+								<tr>
+									<td align="right" colspan="4"><div align="center">
+											<input type="button" name="addRow" id="addRow" value="Add"
+												onClick="addRecord();" />&nbsp;&nbsp;&nbsp;&nbsp; <input
+												type="button" name="reset" id="reset" value="Reset"
+												onClick="resetDataTable();" />
+										</div></td>
+								</tr>
+							</table></td>
+					</tr>
+					<tr>
+						<td colspan="2"><table id="addRowTable" border="1"
+								class="w3-table w3-striped">
+								<thead>
+									<tr style="background-color: #DEB887">
+										<th>S No</th>
+										<th>Product</th>
+										<th>Desc</th>
+										<th>Qty</th>
+										<th>Price</th>
+										<th>Tax</th>
+										<th>Discount</th>
+										<th>Total</th>
+										<th>*</th>
+									</tr>
+								</thead>
+							</table></td>
+					</tr>
+					<tr>
+						<td colspan="2" align="center"><div id="noProductMsg"
+								align="center">no products added</div></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<table class="w3-striped" style="width: 100%">
+								<tr>
+									<td><div align="center">
+											<input type="submit" name="generateInvoice"
+												id="generateInvoice" value="Generate Invoice"
+												onClick="return GeneratePdf();" />&nbsp;&nbsp;&nbsp;&nbsp;
+											<input type="button" name="cancel" id="cancel"
+												value="     Reset Form     " onClick="resetForm();" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										</div></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</form>

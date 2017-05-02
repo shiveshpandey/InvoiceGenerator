@@ -12,4 +12,6 @@ public interface InvoiceGeneratorRepository {
     public List<InvoiceModel> fetchProductListFromDB();
 
     public PdfDataCollectionModel fetchCompanyDetailsFromDB();
+
+    public boolean addProductToDB(InvoiceModel invoiceModel);
 }

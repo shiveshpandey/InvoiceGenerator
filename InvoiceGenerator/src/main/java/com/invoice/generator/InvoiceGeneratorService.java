@@ -8,6 +8,8 @@ public interface InvoiceGeneratorService {
 
     public List<InvoiceModel> fetchProductListFromDB();
 
+    public boolean addProductToDB(InvoiceModel invoiceModel);
+
     public PdfDataCollectionModel fetchCompanyDetailsFromDB();
 
 }

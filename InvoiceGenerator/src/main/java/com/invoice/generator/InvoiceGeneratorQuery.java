@@ -35,4 +35,12 @@ public class InvoiceGeneratorQuery {
     public String selectQueryCompanyDetails() {
         return "select company_id,company_name,company_address,company_mobile,company_vattin,company_cst  from INVOICE_GENERATOR_SCHEMA.COMPANY_DETAILS where company_id like '%company_1%';";
     }
+
+    public String insertQueryAddProductToDB(InvoiceModel invoiceModel) {
+        return "INSERT INTO INVOICE_GENERATOR_SCHEMA.Product_DETAILS "
+                + "(product_id ,product_name, product_description, product_quantity, product_tax,product_discount)"
+                + " VALUES ('" + invoiceModel.getProductId() + "', '" + invoiceModel.getProduct()
+                + "', '" + invoiceModel.getDescription() + "','" + invoiceModel.getQuantity()
+                + "','" + invoiceModel.getTax() + "','" + invoiceModel.getDiscount() + "');";
+    }
 }

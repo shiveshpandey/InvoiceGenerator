@@ -72,6 +72,32 @@ public class InvoiceGeneratorWebController {
         }
     }
 
+    @RequestMapping(value = "/addProduct", method = RequestMethod.GET)
+    public String loadAddProduct(ModelMap model) {
+
+        return "addProduct";
+    }
+
+    @RequestMapping(value = "/addNewProduct", method = RequestMethod.POST)
+    public String addNewProduct(ModelMap model, @RequestParam String product,
+            @RequestParam String description, @RequestParam String tax,
+            @RequestParam String discount, @RequestParam String unitPrice,
+            @RequestParam String quantity) {
+        InvoiceModel invoiceModel = new InvoiceModel();
+        invoiceModel.setDescription(description);
+        invoiceModel.setDiscount(Float.parseFloat(discount));
+        invoiceModel.setProduct(product);
+        invoiceModel.setQuantity(Float.parseFloat(quantity));
+        invoiceModel.setTax(Float.parseFloat(tax));
+        invoiceModel.setUnitPrice(Float.parseFloat(unitPrice));
+        boolean dbOperationStatus = invoiceGeneratorService.addProductToDB(invoiceModel);
+        if (dbOperationStatus)
+            model.addAttribute("msgToUser", "New Product: " + product + " added successfully.");
+        else
+            model.addAttribute("msgToUser", "Error while adding product: " + product + ".");
+        return "addProduct";
+    }
+
     @RequestMapping(value = "/generateInvoice", method = RequestMethod.POST)
     public String generateInvoice(@RequestParam String pdfTextContent,
             @RequestParam String companyName, @RequestParam String companyAddress,
@@ -123,6 +149,7 @@ public class InvoiceGeneratorWebController {
             product.setTax(Float.parseFloat(cells[5]));
             product.setDiscount(Float.parseFloat(cells[6]));
             product.setTotal(Float.parseFloat(cells[7]));
+            product.setProductId(cells[8]);
             productList.add(product);
         }
         PdfDataCollectionModel pdfDataCollectionModel = new PdfDataCollectionModel();

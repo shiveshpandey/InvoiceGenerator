@@ -18,4 +18,8 @@ public class InvoiceGeneratorServiceImpl implements InvoiceGeneratorService {
         return invoiceGeneratorRepository.fetchCompanyDetailsFromDB();
     }
 
+    public boolean addProductToDB(InvoiceModel invoiceModel) {
+        return invoiceGeneratorRepository.addProductToDB(invoiceModel);
+    }
+
 }

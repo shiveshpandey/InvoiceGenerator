@@ -103,4 +103,25 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
         }
         return PdfDataCollectionModel;
     }
+
+    public boolean addProductToDB(InvoiceModel invoiceModel) {
+        try {
+            Class.forName(InvoiceGeneratorQuery.DB_DRIVER_PKG_PATH);
+            Connection conn;
+            conn = DriverManager.getConnection(InvoiceGeneratorQuery.DB_CONNECTION_URL,
+                    InvoiceGeneratorQuery.DB_USER, InvoiceGeneratorQuery.DB_PASSWRD);
+            Statement stmt;
+            stmt = conn.createStatement();
+            String query = new InvoiceGeneratorQuery().insertQueryAddProductToDB(invoiceModel);
+            stmt.executeUpdate(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }

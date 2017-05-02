@@ -4,8 +4,8 @@
 		<h2>Welcome to Invoice Generator !</h2>
 		<table>
 			<tr>
-				<td><a href="loadProduct">Click to go to Invoice Generation
-						page</a></td>
+				<td><h5><a href="loadProduct">Click to go to Invoice Generation
+						page</a></h5></td>
 			</tr>
 			<tr>
 				<td></td>
@@ -14,8 +14,8 @@
 				<td></td>
 			</tr>
 			<tr>
-				<td align="center"><a href="addProduct">Click to go to Add
-						Product page</a></td>
+				<td align="center"><h5><a href="addProduct">Click to go to Add
+						Product page</a></h5></td>
 			</tr>
 		</table>
 	</div>

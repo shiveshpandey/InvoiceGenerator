@@ -115,8 +115,8 @@
 		</form>
 		<table style="width: 50%">
 			<tr>
-				<td align="left"><h5><a href="home">Home page</a> >></h5></td>
-				<td align="right"><h5><a href="loadProduct">Invoice Generation page</a></h5> >></td>
+				<td align="left"><h5><a href="home">Home page</a></h5></td>
+				<td align="right"><h5><a href="loadProduct">Invoice Generation page</a></h5></td>
 			</tr>
 		</table>
 	</div>

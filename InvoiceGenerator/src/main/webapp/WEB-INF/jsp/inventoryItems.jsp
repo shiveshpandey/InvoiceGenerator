@@ -348,8 +348,8 @@
 		</form>
 		<table style="width: 55%">
 			<tr>
-				<td align="left"><h5><a href="home">Home page</a></h5> >></td>
-				<td align="right"><h5><a href="addProduct">Add Product page</a></h5> >></td>
+				<td align="left"><h5><a href="home">Home page</a></h5></td>
+				<td align="right"><h5><a href="addProduct">Add Product page</a></h5></td>
 			</tr>
 		</table>
 	</div>

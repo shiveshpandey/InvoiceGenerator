@@ -1,0 +1,44 @@
+CREATE DATABASE `invoice_generator_schema` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+CREATE TABLE `INVOICE_GENERATOR_SCHEMA`.`company_details` (
+  `company_id` INT DEFAULT NULL,
+  `company_name` varchar(255) DEFAULT NULL,
+  `company_address` varchar(255) DEFAULT NULL,
+  `company_mobile` varchar(255) DEFAULT NULL,
+  `company_vattin` varchar(255) DEFAULT NULL,
+  `company_cst` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `INVOICE_GENERATOR_SCHEMA`.`customer_details` (
+  `order_id` INT DEFAULT NULL,
+  `company_id` INT DEFAULT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `customer_address` varchar(255) DEFAULT NULL,
+  `customer_mobile` varchar(255) DEFAULT NULL,
+  `customer_email` varchar(255) DEFAULT NULL,
+  `order_date` varchar(255) DEFAULT NULL,
+  `order_total_price` varchar(255) DEFAULT NULL,
+  `product_tax` varchar(255) DEFAULT NULL,
+  `product_discount` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `INVOICE_GENERATOR_SCHEMA`.`order_details` (
+  `order_id` INT DEFAULT NULL,
+  `product_id` INT DEFAULT NULL,
+  `product_name` varchar(255) DEFAULT NULL,
+  `product_description` varchar(255) DEFAULT NULL,
+  `product_quantity` varchar(255) DEFAULT NULL,
+  `product_total` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `INVOICE_GENERATOR_SCHEMA`.`product_details` (
+  `company_id` INT DEFAULT NULL,
+  `product_id` INT DEFAULT NULL,
+  `product_name` varchar(255) DEFAULT NULL,
+  `product_description` varchar(255) DEFAULT NULL,
+  `product_quantity` varchar(255) DEFAULT NULL,
+  `product_unit_price` varchar(255) DEFAULT NULL,
+  `product_total` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `INVOICE_GENERATOR_SCHEMA`.`company_details` (`company_id`,`company_name`,`company_address`,`company_mobile`,`company_vattin`,`company_cst`) VALUES (1,'company_1_name','company_1_address','company_1_mobile','company_1_vattin','company_1_cst');

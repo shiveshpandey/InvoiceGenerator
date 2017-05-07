@@ -42,7 +42,7 @@
 				|| "" == document.getElementById("discount").value) {
 			document.getElementById("discount").value = "";
 			document.getElementById("discount").focus();
-			alert("Please provide a valid discount percentage");
+			alert("Please provide a valid discount");
 			return false;
 		} else {
 			document.getElementById("quantity").value = checkPrecision(document
@@ -93,7 +93,7 @@
 									name="unitPrice" id="unitPrice" value=""></td>
 							</tr>
 							<tr>
-								<td>Default Tax (&#8377;)</td>
+								<td>Default Tax (%)</td>
 								<td><input type="text" style="width: 180px" name="tax"
 									id="tax" value=""></td>
 							</tr>

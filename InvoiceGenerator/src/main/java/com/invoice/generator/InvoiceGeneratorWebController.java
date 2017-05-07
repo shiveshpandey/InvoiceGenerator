@@ -228,7 +228,6 @@ public class InvoiceGeneratorWebController {
         PdfPTable midSectionTable = new PdfPTable(columnWidths);
         PdfPTable footerTable = new PdfPTable(1);
 
-        float taxTotal = 0;
         float discountTotal = 0;
         float amountTotal = 0;
 
@@ -463,7 +462,6 @@ public class InvoiceGeneratorWebController {
                 cell04.setVerticalAlignment(Element.ALIGN_CENTER);
                 midSectionTable.addCell(cell04);
 
-                taxTotal = taxTotal + pdfDataCollection.getInvoiceModel().get(index).getTax();
                 discountTotal = discountTotal
                         + pdfDataCollection.getInvoiceModel().get(index).getDiscount();
                 amountTotal = amountTotal
@@ -477,7 +475,7 @@ public class InvoiceGeneratorWebController {
         cell05.setVerticalAlignment(Element.ALIGN_CENTER);
         midSectionTable.addCell(cell05);
 
-        cell05 = new PdfPCell(new Phrase(Float.toString(taxTotal), InvoiceWebConstants.font1));
+        cell05 = new PdfPCell(new Phrase(" - ", InvoiceWebConstants.font1));
         cell05.setBorder(Rectangle.BOX);
         cell05.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell05.setVerticalAlignment(Element.ALIGN_CENTER);
@@ -509,7 +507,7 @@ public class InvoiceGeneratorWebController {
         cell05.setColspan(2);
         midSectionTable.addCell(cell05);
 
-        cell05 = new PdfPCell(new Phrase(Float.toString(taxTotal - discountTotal + amountTotal),
+        cell05 = new PdfPCell(new Phrase(Float.toString(amountTotal),
                 InvoiceWebConstants.font1));
         cell05.setBorder(Rectangle.BOX);
         cell05.setHorizontalAlignment(Element.ALIGN_CENTER);

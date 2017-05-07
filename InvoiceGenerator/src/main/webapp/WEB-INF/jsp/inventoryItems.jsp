@@ -95,9 +95,59 @@
 					.getElementById("tax"));
 			document.getElementById("total").value = checkPrecision(document
 					.getElementById("total"));
+			autoCalculateFieldValues();
 			return true;
 		}
 
+	}
+	function autoCalculateFieldValues() {
+		if (isNaN(document.getElementById("quantity").value)
+				|| null == document.getElementById("quantity").value
+				|| "" == document.getElementById("quantity").value) {
+			document.getElementById("quantity").value = "";
+			document.getElementById("quantity").focus();
+			alert("Please provide a valid quantity");
+			return false;
+		} else if (isNaN(document.getElementById("unitPrice").value)
+				|| null == document.getElementById("unitPrice").value
+				|| "" == document.getElementById("unitPrice").value) {
+			document.getElementById("unitPrice").value = "";
+			document.getElementById("unitPrice").focus();
+			alert("Please provide a valid unit-price");
+			return false;
+		} else if (isNaN(document.getElementById("tax").value)
+				|| null == document.getElementById("tax").value
+				|| "" == document.getElementById("tax").value) {
+			document.getElementById("tax").value = "";
+			document.getElementById("tax").focus();
+			alert("Please provide a valid tax percentage");
+			return false;
+		} else if (isNaN(document.getElementById("discount").value)
+				|| null == document.getElementById("discount").value
+				|| "" == document.getElementById("discount").value) {
+			document.getElementById("discount").value = "";
+			document.getElementById("discount").focus();
+			alert("Please provide a valid discount");
+			return false;
+		}
+		document.getElementById("quantity").value = checkPrecision(document
+				.getElementById("quantity"));
+		document.getElementById("unitPrice").value = checkPrecision(document
+				.getElementById("unitPrice"));
+		document.getElementById("discount").value = checkPrecision(document
+				.getElementById("discount"));
+		document.getElementById("tax").value = checkPrecision(document
+				.getElementById("tax"));
+
+		var quantity = document.getElementById("quantity").value;
+		var unitPrice = document.getElementById("unitPrice").value;
+		var discount = document.getElementById("discount").value;
+		var tax = document.getElementById("tax").value;
+		var total = ((quantity * unitPrice) * (1 + (tax / 100)) - discount);
+		
+		document.getElementById("total").value = total;
+		document.getElementById("total").value = checkPrecision(document
+				.getElementById("total"));
 	}
 	function checkPrecision(obj) {
 		if ((obj.value).lastIndexOf(".") == (obj.value).length - 1)
@@ -273,7 +323,7 @@
 									</select></td>
 									<td>&nbsp;Quantity</td>
 									<td><input type="text" name="quantity" id="quantity"
-										value=""></td>
+										onChange="autoCalculateFieldValues();" value=""></td>
 								</tr>
 								<tr>
 									<td rowspan="4">Description</td>
@@ -281,16 +331,17 @@
 											name="description" id="description"></textarea></td>
 									<td>&nbsp;Unit Price (&#8377;)</td>
 									<td><input type="text" name="unitPrice" id="unitPrice"
-										value=""></td>
+										onChange="autoCalculateFieldValues();" value=""></td>
 								</tr>
 								<tr>
 									<td>Tax (&#8377;)</td>
-									<td><input type="text" name="tax" id="tax" value=""></td>
+									<td><input type="text" name="tax" id="tax"
+										onChange="autoCalculateFieldValues();" value=""></td>
 								</tr>
 								<tr>
 									<td>Discount (&#8377;)</td>
 									<td><input type="text" name="discount" id="discount"
-										value=""></td>
+										onChange="autoCalculateFieldValues();" value=""></td>
 								</tr>
 								<tr>
 									<td>Total (&#8377;)</td>
@@ -348,8 +399,12 @@
 		</form>
 		<table style="width: 55%">
 			<tr>
-				<td align="left"><h5><a href="home">Home page</a></h5></td>
-				<td align="right"><h5><a href="addProduct">Add Product page</a></h5></td>
+				<td align="left"><h5>
+						<a href="home">Home page</a>
+					</h5></td>
+				<td align="right"><h5>
+						<a href="addProduct">Add Product page</a>
+					</h5></td>
 			</tr>
 		</table>
 	</div>

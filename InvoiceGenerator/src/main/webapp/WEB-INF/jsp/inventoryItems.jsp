@@ -13,11 +13,13 @@
 		if (index == count++) {
 			document.getElementById("product").value = "${item.productId}";
 			document.getElementById("description").value = "${item.description}";
-			document.getElementById("quantity").value = 1;
+			document.getElementById("quantity").value = "${item.quantity}";
 			document.getElementById("unitPrice").value = "${item.unitPrice}";
-			document.getElementById("tax").value = "${item.tax}";
-			document.getElementById("discount").value = "${item.discount}";
-			document.getElementById("total").value = "${item.total}";
+			document.getElementById("tax").value = 0;
+			document.getElementById("discount").value = 0;
+			document.getElementById("total").value = document
+					.getElementById("quantity").value
+					* document.getElementById("unitPrice").value;
 		}
 		</c:forEach>
 	}
@@ -63,20 +65,6 @@
 			document.getElementById("unitPrice").focus();
 			alert("Please provide a valid unit-price");
 			return false;
-		} else if (isNaN(document.getElementById("tax").value)
-				|| null == document.getElementById("tax").value
-				|| "" == document.getElementById("tax").value) {
-			document.getElementById("tax").value = "";
-			document.getElementById("tax").focus();
-			alert("Please provide a valid tax percentage");
-			return false;
-		} else if (isNaN(document.getElementById("discount").value)
-				|| null == document.getElementById("discount").value
-				|| "" == document.getElementById("discount").value) {
-			document.getElementById("discount").value = "";
-			document.getElementById("discount").focus();
-			alert("Please provide a valid discount percentage");
-			return false;
 		} else if (isNaN(document.getElementById("total").value)
 				|| null == document.getElementById("total").value
 				|| "" == document.getElementById("total").value) {
@@ -89,10 +77,6 @@
 					.getElementById("quantity"));
 			document.getElementById("unitPrice").value = checkPrecision(document
 					.getElementById("unitPrice"));
-			document.getElementById("discount").value = checkPrecision(document
-					.getElementById("discount"));
-			document.getElementById("tax").value = checkPrecision(document
-					.getElementById("tax"));
 			document.getElementById("total").value = checkPrecision(document
 					.getElementById("total"));
 			autoCalculateFieldValues();
@@ -115,39 +99,21 @@
 			document.getElementById("unitPrice").focus();
 			alert("Please provide a valid unit-price");
 			return false;
-		} else if (isNaN(document.getElementById("tax").value)
-				|| null == document.getElementById("tax").value
-				|| "" == document.getElementById("tax").value) {
-			document.getElementById("tax").value = "";
-			document.getElementById("tax").focus();
-			alert("Please provide a valid tax percentage");
-			return false;
-		} else if (isNaN(document.getElementById("discount").value)
-				|| null == document.getElementById("discount").value
-				|| "" == document.getElementById("discount").value) {
-			document.getElementById("discount").value = "";
-			document.getElementById("discount").focus();
-			alert("Please provide a valid discount");
-			return false;
 		}
+
 		document.getElementById("quantity").value = checkPrecision(document
 				.getElementById("quantity"));
 		document.getElementById("unitPrice").value = checkPrecision(document
 				.getElementById("unitPrice"));
-		document.getElementById("discount").value = checkPrecision(document
-				.getElementById("discount"));
-		document.getElementById("tax").value = checkPrecision(document
-				.getElementById("tax"));
 
 		var quantity = document.getElementById("quantity").value;
 		var unitPrice = document.getElementById("unitPrice").value;
-		var discount = document.getElementById("discount").value;
-		var tax = document.getElementById("tax").value;
-		var total = ((quantity * unitPrice) * (1 + (tax / 100)) - discount);
-		
+		var total = (quantity * unitPrice);
+
 		document.getElementById("total").value = total;
 		document.getElementById("total").value = checkPrecision(document
 				.getElementById("total"));
+
 	}
 	function checkPrecision(obj) {
 		if ((obj.value).lastIndexOf(".") == (obj.value).length - 1)
@@ -157,9 +123,11 @@
 		return obj.value;
 	}
 	function deleteRow(r) {
-		document.getElementById("addRowTable").rows[r].cells[8].innerHTML = "deleted";
+		document.getElementById("addRowTable").rows[r].cells[6].innerHTML = "deleted";
+		finalTotalAutoCalculate();
 	}
 	function addRecord() {
+		autoCalculateFieldValues();
 		if (validateAddRowData()) {
 			if (document.getElementById("noProductMsg"))
 				document.getElementById("borderManageTable").deleteRow(6);
@@ -173,8 +141,6 @@
 			var cell4 = row.insertCell(4);
 			var cell5 = row.insertCell(5);
 			var cell6 = row.insertCell(6);
-			var cell7 = row.insertCell(7);
-			var cell8 = row.insertCell(8);
 
 			cell0.innerHTML = table.rows.length - 1;
 			cell1.innerHTML = document.getElementById("product").options[document
@@ -182,30 +148,71 @@
 			cell2.innerHTML = document.getElementById("description").value;
 			cell3.innerHTML = document.getElementById("quantity").value;
 			cell4.innerHTML = document.getElementById("unitPrice").value;
-			cell5.innerHTML = document.getElementById("tax").value;
-			cell6.innerHTML = document.getElementById("discount").value;
-			cell7.innerHTML = document.getElementById("total").value;
-			cell8.innerHTML = "<button type='button' onclick='deleteRow(" + '"'
+			cell5.innerHTML = document.getElementById("total").value;
+			cell6.innerHTML = "<button type='button' onclick='deleteRow(" + '"'
 					+ (table.rows.length - 1) + '"' + ")' >Delete</button>";
 			cell1.id = document.getElementById("product").value;
+			finalTotalAutoCalculate();
 		}
+	}
+	function finalTotalAutoCalculate() {
+		if (isNaN(document.getElementById("tax").value)
+				|| null == document.getElementById("tax").value
+				|| "" == document.getElementById("tax").value) {
+			document.getElementById("tax").value = "";
+			document.getElementById("tax").focus();
+			alert("Please provide a valid tax percentage");
+			return false;
+		} else if (isNaN(document.getElementById("discount").value)
+				|| null == document.getElementById("discount").value
+				|| "" == document.getElementById("discount").value) {
+			document.getElementById("discount").value = "";
+			document.getElementById("discount").focus();
+			alert("Please provide a valid discount percentage");
+			return false;
+		}
+		document.getElementById("discount").value = checkPrecision(document
+				.getElementById("discount"));
+		document.getElementById("tax").value = checkPrecision(document
+				.getElementById("tax"));
+
+		var a = 0;
+		var table = document.getElementById("addRowTable");
+
+		for (var r = 1; r < table.rows.length; r++) {
+			if (table.rows[r].cells[6].innerHTML != "deleted") {
+				a += table.rows[r].cells[5].innerHTML * 1;
+			}
+		}
+		document.getElementById("subAmtDiv").innerText = a;
+		document.getElementById("finalAmtDiv").innerText = "Final Total = { Sub Total } + { "
+				+ document.getElementById("tax").value
+				+ "% Tax i.e. "
+				+ a
+				* document.getElementById("tax").value
+				/ 100
+				+ " } - { Discount i.e. "
+				+ document.getElementById("discount").value + " }  =  ";
+		document.getElementById("finalAmt").innerText = (a * 1
+				+ (a * document.getElementById("tax").value / 100) - document
+				.getElementById("discount").value * 1);
+
 	}
 	function GeneratePdf() {
 		var str = "";
 		var table = document.getElementById("addRowTable");
 		for (var r = 1; r < table.rows.length; r++) {
-			if (table.rows[r].cells[8].innerHTML != "deleted") {
+			if (table.rows[r].cells[6].innerHTML != "deleted") {
 				str = str + table.rows[r].cells[0].innerHTML + "##"
 						+ table.rows[r].cells[1].innerHTML + "##"
 						+ table.rows[r].cells[2].innerHTML + "##"
 						+ table.rows[r].cells[3].innerHTML + "##"
 						+ table.rows[r].cells[4].innerHTML + "##"
 						+ table.rows[r].cells[5].innerHTML + "##"
-						+ table.rows[r].cells[6].innerHTML + "##"
-						+ table.rows[r].cells[7].innerHTML + "##"
 						+ table.rows[r].cells[1].id + "@@@";
 			}
 		}
+
 		if (str == "" || str == null) {
 			alert("Please add atleast one product");
 			return false;
@@ -220,11 +227,11 @@
 	function resetDataTable() {
 		document.getElementById("product").selectedIndex = 0;
 		document.getElementById("description").value = '';
-		document.getElementById("quantity").value = '';
-		document.getElementById("unitPrice").value = '';
-		document.getElementById("tax").value = '';
-		document.getElementById("discount").value = '';
-		document.getElementById("total").value = '';
+		document.getElementById("quantity").value = 0;
+		document.getElementById("unitPrice").value = 0;
+		document.getElementById("tax").value = 0;
+		document.getElementById("discount").value = 0;
+		document.getElementById("total").value = 0;
 	}
 </script>
 <body>
@@ -326,23 +333,14 @@
 										onChange="autoCalculateFieldValues();" value=""></td>
 								</tr>
 								<tr>
-									<td rowspan="4">Description</td>
-									<td rowspan="4"><textarea rows="6" cols="20"
+									<td rowspan="2">Description</td>
+									<td rowspan="2"><textarea rows="4" cols="20"
 											name="description" id="description"></textarea></td>
 									<td>&nbsp;Unit Price (&#8377;)</td>
 									<td><input type="text" name="unitPrice" id="unitPrice"
 										onChange="autoCalculateFieldValues();" value=""></td>
 								</tr>
-								<tr>
-									<td>Tax (&#8377;)</td>
-									<td><input type="text" name="tax" id="tax"
-										onChange="autoCalculateFieldValues();" value=""></td>
-								</tr>
-								<tr>
-									<td>Discount (&#8377;)</td>
-									<td><input type="text" name="discount" id="discount"
-										onChange="autoCalculateFieldValues();" value=""></td>
-								</tr>
+
 								<tr>
 									<td>Total (&#8377;)</td>
 									<td><input type="text" name="total" id="total" value=""></td>
@@ -354,6 +352,14 @@
 												type="button" name="reset" id="reset" value="Reset"
 												onClick="resetDataTable();" />
 										</div></td>
+								</tr>
+								<tr>
+									<td>Tax (%)</td>
+									<td><input type="text" name="tax" id="tax"
+										onChange="finalTotalAutoCalculate();" value=""></td>
+									<td>Discount (&#8377;)</td>
+									<td><input type="text" name="discount" id="discount"
+										onChange="finalTotalAutoCalculate();" value=""></td>
 								</tr>
 							</table></td>
 					</tr>
@@ -367,8 +373,6 @@
 										<th>Desc</th>
 										<th>Qty</th>
 										<th>Price</th>
-										<th>Tax</th>
-										<th>Discount</th>
 										<th>Total</th>
 										<th>*</th>
 									</tr>
@@ -383,7 +387,18 @@
 						<td colspan="2">
 							<table class="w3-striped" style="width: 100%">
 								<tr>
-									<td><div align="center">
+									<td><div align="right">Sub Total =</div></td>
+									<td><div align="right" id="subAmtDiv"
+											style="font-weight: bold">0.0</div></td>
+								</tr>
+								<tr>
+									<td><div align="right" id="finalAmtDiv">Final Total
+											=</div></td>
+									<td><div align="right" id="finalAmt"
+											style="font-weight: bold">0.0</div></td>
+								</tr>
+								<tr>
+									<td colspan="2"><div align="center">
 											<input type="submit" name="generateInvoice"
 												id="generateInvoice" value="Generate Invoice"
 												onClick="return GeneratePdf();" />&nbsp;&nbsp;&nbsp;&nbsp;

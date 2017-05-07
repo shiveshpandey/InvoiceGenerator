@@ -61,9 +61,10 @@ public class InvoiceGeneratorRepoImpl implements InvoiceGeneratorRepository {
                 invoice.setProduct(rs.getString("product_name"));
                 invoice.setDescription(rs.getString("product_description"));
                 invoice.setQuantity(Float.parseFloat(rs.getString("product_quantity")));
-                invoice.setTax(Float.parseFloat(rs.getString("product_tax")));
-                invoice.setDiscount(Float.parseFloat(rs.getString("product_discount")));
-                // invoice.setTotal(Float.parseFloat(rs.getString("product_total")));
+                invoice.setUnitPrice(Float.parseFloat(rs.getString("product_unit_price")));
+                // invoice.setTax(Float.parseFloat(rs.getString("product_tax")));
+                // invoice.setDiscount(Float.parseFloat(rs.getString("product_discount")));
+                // // invoice.setTotal(Float.parseFloat(rs.getString("product_total")));
                 invoiceList.add(invoice);
             }
         } catch (SQLException e) {

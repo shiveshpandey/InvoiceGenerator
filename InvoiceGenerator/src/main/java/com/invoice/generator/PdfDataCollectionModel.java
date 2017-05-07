@@ -18,6 +18,24 @@ public class PdfDataCollectionModel {
     private String[] header;
     private String[] footer;
     List<InvoiceModel> invoiceModel;
+    private float tax;
+    private float discount;
+
+    public float getTax() {
+        return tax;
+    }
+
+    public void setTax(float tax) {
+        this.tax = tax;
+    }
+
+    public float getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
 
     public int getOrderId() {
         return orderId;

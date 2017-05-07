@@ -12,8 +12,6 @@ public class InvoiceModel implements Serializable {
     private String description;
     private float quantity;
     private float unitPrice;
-    private float tax;
-    private float discount;
     private float total;
 
     public String getProduct() {
@@ -46,22 +44,6 @@ public class InvoiceModel implements Serializable {
 
     public void setUnitPrice(float unitPrice) {
         this.unitPrice = unitPrice;
-    }
-
-    public float getTax() {
-        return tax;
-    }
-
-    public void setTax(float tax) {
-        this.tax = tax;
-    }
-
-    public float getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(float discount) {
-        this.discount = discount;
     }
 
     public float getTotal() {

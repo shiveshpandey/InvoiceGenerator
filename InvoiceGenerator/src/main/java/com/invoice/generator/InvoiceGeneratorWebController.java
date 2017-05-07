@@ -85,15 +85,12 @@ public class InvoiceGeneratorWebController {
 
     @RequestMapping(value = "/addNewProduct", method = RequestMethod.POST)
     public String addNewProduct(ModelMap model, @RequestParam String product,
-            @RequestParam String description, @RequestParam String tax,
-            @RequestParam String discount, @RequestParam String unitPrice,
+            @RequestParam String description, @RequestParam String unitPrice,
             @RequestParam String quantity, @RequestParam String companyId) {
         InvoiceModel invoiceModel = new InvoiceModel();
         invoiceModel.setDescription(description);
-        invoiceModel.setDiscount(Float.parseFloat(discount));
         invoiceModel.setProduct(product);
         invoiceModel.setQuantity(Float.parseFloat(quantity));
-        invoiceModel.setTax(Float.parseFloat(tax));
         invoiceModel.setUnitPrice(Float.parseFloat(unitPrice));
         invoiceModel.setCompanyId(Integer.parseInt(companyId));
 
@@ -113,7 +110,8 @@ public class InvoiceGeneratorWebController {
             @RequestParam String companyCst, @RequestParam String customerName,
             @RequestParam String customerMobile, @RequestParam String customerAddress,
             @RequestParam String customerEmail, @RequestParam String orderId,
-            @RequestParam String companyId, @RequestParam String orderDate)
+            @RequestParam String companyId, @RequestParam String orderDate,
+            @RequestParam String tax, @RequestParam String discount)
             throws DocumentException, IOException, ParseException {
         String userInput = URLDecoder.decode(pdfTextContent, "UTF-8");
 
@@ -130,6 +128,8 @@ public class InvoiceGeneratorWebController {
         pdfDataCollection.setCustomerEmail(customerEmail);
         pdfDataCollection.setCustomerMobile(customerMobile);
         pdfDataCollection.setCustomerName(customerName);
+        pdfDataCollection.setDiscount(Float.valueOf(discount));
+        pdfDataCollection.setTax(Float.valueOf(tax));
         pdfDataCollection.setHeader(a);
         pdfDataCollection.setFooter(b);
         pdfDataCollection.setOrderDate(orderDate);
@@ -154,10 +154,8 @@ public class InvoiceGeneratorWebController {
             product.setDescription(cells[2]);
             product.setQuantity(Float.parseFloat(cells[3]));
             product.setUnitPrice(Float.parseFloat(cells[4]));
-            product.setTax(Float.parseFloat(cells[5]));
-            product.setDiscount(Float.parseFloat(cells[6]));
-            product.setTotal(Float.parseFloat(cells[7]));
-            product.setProductId(Integer.parseInt(cells[8]));
+            product.setTotal(Float.parseFloat(cells[5]));
+            product.setProductId(Integer.parseInt(cells[6]));
             productList.add(product);
         }
         PdfDataCollectionModel pdfDataCollectionModel = new PdfDataCollectionModel();
@@ -223,12 +221,11 @@ public class InvoiceGeneratorWebController {
     private List<PdfPTable> formatPdfContents(PdfDataCollectionModel pdfDataCollection) {
         List<PdfPTable> pdfTableList = new ArrayList<PdfPTable>();
 
-        float[] columnWidths = { 2, 4, 4, 2, 2, 2, 2, 2 };
+        float[] columnWidths = { 2, 5, 5, 2, 3, 3 };
         PdfPTable headerTable = new PdfPTable(5);
         PdfPTable midSectionTable = new PdfPTable(columnWidths);
         PdfPTable footerTable = new PdfPTable(1);
 
-        float discountTotal = 0;
         float amountTotal = 0;
 
         PdfPCell cell01 = new PdfPCell(new Phrase(" ", InvoiceWebConstants.font1));
@@ -375,18 +372,6 @@ public class InvoiceGeneratorWebController {
         cell03.setBorder(Rectangle.BOX);
         midSectionTable.addCell(cell03);
 
-        cell03 = new PdfPCell(new Phrase("Tax", InvoiceWebConstants.font1));
-        cell03.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell03.setVerticalAlignment(Element.ALIGN_CENTER);
-        cell03.setBorder(Rectangle.BOX);
-        midSectionTable.addCell(cell03);
-
-        cell03 = new PdfPCell(new Phrase("Discount", InvoiceWebConstants.font1));
-        cell03.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell03.setVerticalAlignment(Element.ALIGN_CENTER);
-        cell03.setBorder(Rectangle.BOX);
-        midSectionTable.addCell(cell03);
-
         cell03 = new PdfPCell(new Phrase("Amount (A*B)", InvoiceWebConstants.font1));
         cell03.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell03.setVerticalAlignment(Element.ALIGN_CENTER);
@@ -438,23 +423,6 @@ public class InvoiceGeneratorWebController {
                 midSectionTable.addCell(cell04);
 
                 cell04 = new PdfPCell(new Phrase(
-                        Float.toString(pdfDataCollection.getInvoiceModel().get(index).getTax()),
-                        InvoiceWebConstants.font3));
-                cell04.setBorder(Rectangle.LEFT + Rectangle.RIGHT);
-                cell04.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell04.setVerticalAlignment(Element.ALIGN_CENTER);
-                midSectionTable.addCell(cell04);
-
-                cell04 = new PdfPCell(new Phrase(
-                        Float.toString(
-                                pdfDataCollection.getInvoiceModel().get(index).getDiscount()),
-                        InvoiceWebConstants.font3));
-                cell04.setBorder(Rectangle.LEFT + Rectangle.RIGHT);
-                cell04.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell04.setVerticalAlignment(Element.ALIGN_CENTER);
-                midSectionTable.addCell(cell04);
-
-                cell04 = new PdfPCell(new Phrase(
                         Float.toString(pdfDataCollection.getInvoiceModel().get(index).getTotal()),
                         InvoiceWebConstants.font3));
                 cell04.setBorder(Rectangle.LEFT + Rectangle.RIGHT);
@@ -462,8 +430,6 @@ public class InvoiceGeneratorWebController {
                 cell04.setVerticalAlignment(Element.ALIGN_CENTER);
                 midSectionTable.addCell(cell04);
 
-                discountTotal = discountTotal
-                        + pdfDataCollection.getInvoiceModel().get(index).getDiscount();
                 amountTotal = amountTotal
                         + pdfDataCollection.getInvoiceModel().get(index).getTotal();
             }
@@ -475,47 +441,37 @@ public class InvoiceGeneratorWebController {
         cell05.setVerticalAlignment(Element.ALIGN_CENTER);
         midSectionTable.addCell(cell05);
 
-        cell05 = new PdfPCell(new Phrase(" - ", InvoiceWebConstants.font1));
-        cell05.setBorder(Rectangle.BOX);
-        cell05.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell05.setVerticalAlignment(Element.ALIGN_CENTER);
-        midSectionTable.addCell(cell05);
-
-        cell05 = new PdfPCell(new Phrase(Float.toString(discountTotal), InvoiceWebConstants.font1));
-        cell05.setBorder(Rectangle.BOX);
-        cell05.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell05.setVerticalAlignment(Element.ALIGN_CENTER);
-        midSectionTable.addCell(cell05);
-
         cell05 = new PdfPCell(new Phrase(Float.toString(amountTotal), InvoiceWebConstants.font1));
         cell05.setBorder(Rectangle.BOX);
         cell05.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell05.setVerticalAlignment(Element.ALIGN_CENTER);
         midSectionTable.addCell(cell05);
 
-        cell05 = new PdfPCell(new Phrase("Final Total", InvoiceWebConstants.font1));
+        cell05 = new PdfPCell(
+                new Phrase(
+                        "Final Total = { Sub Total } + { " + pdfDataCollection.getTax()
+                                + "% Tax i.e. " + amountTotal * pdfDataCollection.getTax() / 100
+                                + " } - { Discount i.e. " + pdfDataCollection.getDiscount() + " }",
+                        InvoiceWebConstants.font1));
         cell05.setBorder(Rectangle.BOX);
         cell05.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell05.setVerticalAlignment(Element.ALIGN_CENTER);
         cell05.setColspan(5);
         midSectionTable.addCell(cell05);
 
-        cell05 = new PdfPCell(new Phrase(" ", InvoiceWebConstants.font1));
-        cell05.setBorder(Rectangle.BOX);
-        cell05.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell05.setVerticalAlignment(Element.ALIGN_CENTER);
-        cell05.setColspan(2);
-        midSectionTable.addCell(cell05);
-
-        cell05 = new PdfPCell(new Phrase(Float.toString(amountTotal),
-                InvoiceWebConstants.font1));
+        cell05 = new PdfPCell(
+                new Phrase(
+                        Float.toString(
+                                amountTotal + (amountTotal * pdfDataCollection.getTax() / 100)
+                                        - pdfDataCollection.getDiscount()),
+                        InvoiceWebConstants.font1));
         cell05.setBorder(Rectangle.BOX);
         cell05.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell05.setVerticalAlignment(Element.ALIGN_CENTER);
         midSectionTable.addCell(cell05);
 
         cell05 = new PdfPCell(new Phrase(" ", InvoiceWebConstants.font1));
-        cell05.setColspan(8);
+        cell05.setColspan(6);
         cell05.disableBorderSide(Rectangle.BOX);
         midSectionTable.addCell(cell05);
 
